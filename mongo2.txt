@@ -1,0 +1,78 @@
+> show databases;
+admin    0.000GB
+config   0.000GB
+local    0.000GB
+student  0.000GB
+> use student;
+switched to db student
+> show student;
+uncaught exception: Error: don't know how to show [student] :
+shellHelper.show@src/mongo/shell/utils.js:1211:11
+shellHelper@src/mongo/shell/utils.js:838:15
+@(shellhelp2):1:1
+> show collections;
+students
+> db.students.find()
+{ "_id" : ObjectId("6278a9511511c0c603c747c6"), "srn" : 1001, "sname" : "AAA", "degree" : "BCA", "sem" : 2, "cgpa" : 7.5 }
+{ "_id" : ObjectId("6278aa7e1511c0c603c747c7"), "srn" : 1002, "sname" : "BBB", "degree" : "BCA", "sem" : 2, "cgpa" : 6.5 }
+{ "_id" : ObjectId("6278aacd1511c0c603c747c8"), "srn" : 1003, "sname" : "CCC", "degree" : "BCA", "sem" : 4, "cgpa" : 7 }
+{ "_id" : ObjectId("6278ab541511c0c603c747c9"), "srn" : 1003, "sname" : "DDD", "degree" : "MCA", "sem" : 4, "cgpa" : 8 }
+{ "_id" : ObjectId("6278ab711511c0c603c747ca"), "srn" : 1003, "sname" : "EEE", "degree" : "MCA", "sem" : 6, "cgpa" : 7.3 }
+{ "_id" : ObjectId("6278ab8a1511c0c603c747cb"), "srn" : 1003, "sname" : "FFF", "degree" : "BCA", "sem" : 6, "cgpa" : 7.6 }
+{ "_id" : ObjectId("6278abb21511c0c603c747cc"), "srn" : 1003, "sname" : "GGG", "degree" : "BCA", "sem" : 3, "cgpa" : 6.8 }
+> db.students.drop()
+true
+> show collections;
+> db.createCollection("students")
+{ "ok" : 1 }
+> db.students.insertMany([{name:"ajil",batch:"mca",rollno : 101},{name:"binoy",batch:"mca",rollno:102}]);
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("628215a8bb00bbe63e0c2bf5"),
+                ObjectId("628215a8bb00bbe63e0c2bf6")
+        ]
+}
+> db.students.find()
+{ "_id" : ObjectId("628215a8bb00bbe63e0c2bf5"), "name" : "ajil", "batch" : "mca", "rollno" : 101 }
+{ "_id" : ObjectId("628215a8bb00bbe63e0c2bf6"), "name" : "binoy", "batch" : "mca", "rollno" : 102 }
+> use Employee
+switched to db Employee
+> db.createCollection("employee")
+{ "ok" : 1 }
+> db.employee.insert({eid:101,ename:"ajil",dept:"backend",desig:"developer",salary:35000,yoj:2023,address:{dno:1,street:"kannampally",locality:"alappuzha",city:"kayamkulam"}})
+WriteResult({ "nInserted" : 1 })
+> db.employee.insert({eid:102,ename:"rahul",dept:"frontend",desig:"developer",salary:25000,yoj:2023,address:{dno:2,street:"cochin",locality:"ernakulam",city:"kakkanad"}})
+WriteResult({ "nInserted" : 1 })
+> db.employee.insert({eid:103,ename:"binoy",dept:"middleware",desig:"manager",salary:55000,yoj:2023,address:{dno:3,street:"techno park",locality:"trivandrum",city:"kazhakootam"}})
+WriteResult({ "nInserted" : 1 })
+> db.students.find({},{ename:1})
+> db.employee.find({},{ename:1})
+{ "_id" : ObjectId("628217dbbb00bbe63e0c2bf7"), "ename" : "ajil" }
+{ "_id" : ObjectId("62821824bb00bbe63e0c2bf8"), "ename" : "rahul" }
+{ "_id" : ObjectId("6282187fbb00bbe63e0c2bf9"), "ename" : "binoy" }
+> db.employee.find({and:[{salary : {$gte:50000}},{salary : {$lte:75000}}]},{ename:1})
+> db.employee.find({$and:[{salary : {$gte:50000}},{salary : {$lte:75000}}]},{ename:1})
+{ "_id" : ObjectId("6282187fbb00bbe63e0c2bf9"), "ename" : "binoy" }
+> db.employee.find({desig:"developer"},{ename : 1})
+{ "_id" : ObjectId("628217dbbb00bbe63e0c2bf7"), "ename" : "ajil" }
+{ "_id" : ObjectId("62821824bb00bbe63e0c2bf8"), "ename" : "rahul" }
+> db.employee.find({ename:"rahul"},{ename:1,salary:1})
+{ "_id" : ObjectId("62821824bb00bbe63e0c2bf8"), "ename" : "rahul", "salary" : 25000 }
+> db.employee.find({},{address.city : 1})
+uncaught exception: SyntaxError: missing : after property id :
+@(shell):1:28
+> db.employee.find({},{address.city:1})
+uncaught exception: SyntaxError: missing : after property id :
+@(shell):1:28
+> db.employee.find({},{city:1})
+{ "_id" : ObjectId("628217dbbb00bbe63e0c2bf7") }
+{ "_id" : ObjectId("62821824bb00bbe63e0c2bf8") }
+{ "_id" : ObjectId("6282187fbb00bbe63e0c2bf9") }
+> db.employee.find({},{address.city:1})
+uncaught exception: SyntaxError: missing : after property id :
+@(shell):1:28
+> db.employee.find({},{"address.city":1})
+{ "_id" : ObjectId("628217dbbb00bbe63e0c2bf7"), "address" : { "city" : "kayamkulam" } }
+{ "_id" : ObjectId("62821824bb00bbe63e0c2bf8"), "address" : { "city" : "kakkanad" } }
+{ "_id" : ObjectId("6282187fbb00bbe63e0c2bf9"), "address" : { "city" : "kazhakootam" } }
